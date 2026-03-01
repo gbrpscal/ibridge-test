@@ -1,14 +1,8 @@
-const API_BASE = "http://localhost:8000/api";
-
-async function getJson(path) {
-  const res = await fetch(`${API_BASE}${path}`);
-  if (!res.ok) throw new Error(`Erro ${res.status} em ${path}`);
-  return res.json();
-}
+const BASE = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 export const api = {
-  resumo: () => getJson("/resumo"),
-  topOperadores: () => getJson("/top-operadores"),
-  topListas: () => getJson("/top-listas"),
-  topCampanhas: () => getJson("/top-campanhas"),
+  resumo: () => fetch(`${BASE}/resumo`).then((r) => r.json()),
+  topOperadores: () => fetch(`${BASE}/top-operadores`).then((r) => r.json()),
+  topListas: () => fetch(`${BASE}/top-listas`).then((r) => r.json()),
+  topCampanhas: () => fetch(`${BASE}/top-campanhas`).then((r) => r.json()),
 };
