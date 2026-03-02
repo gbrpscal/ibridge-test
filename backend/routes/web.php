@@ -4,9 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\DashboardController;
 
 Route::get('/', function () {
-    return view('welcome');
+    $path = public_path('app/index.html');
+    abort_unless(file_exists($path), 404, 'Frontend build not found');
+    return file_get_contents($path);
 });
-
 
 Route::get('/{any}', function () {
     $path = public_path('app/index.html');
