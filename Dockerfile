@@ -1,3 +1,4 @@
+# ---------- 1) Build do frontend ----------
 FROM node:20-bookworm AS frontend
 WORKDIR /app/frontend
 
@@ -7,6 +8,8 @@ RUN npm ci
 COPY frontend/ ./
 RUN npm run build
 
+
+# ---------- 2) App (Laravel) ----------
 FROM php:8.3-cli-bookworm AS app
 
 RUN apt-get update && apt-get install -y \
@@ -18,14 +21,17 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app/backend
 
-COPY backend/composer.json backend/composer.lock ./
-RUN composer install --no-dev --optimize-autoloader
-
+# Copia o backend inteiro (inclui artisan)
 COPY backend/ ./
 
+# Agora sim pode rodar composer (artisan existe)
+RUN composer install --no-dev --optimize-autoloader
+
+# Pastas necessárias
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
  && chmod -R 775 storage bootstrap/cache
 
+# Copia build do frontend
 RUN rm -rf public/app && mkdir -p public/app
 COPY --from=frontend /app/frontend/dist/ /app/backend/public/app/
 
