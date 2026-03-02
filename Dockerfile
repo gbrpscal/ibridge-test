@@ -31,4 +31,6 @@ COPY --from=frontend /app/frontend/dist/ /app/backend/public/app/
 RUN rm -rf public/assets && mkdir -p public/assets
 COPY --from=frontend /app/frontend/dist/assets/ /app/backend/public/assets/
 
+COPY frontend/public/ /app/backend/public/
+
 CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
