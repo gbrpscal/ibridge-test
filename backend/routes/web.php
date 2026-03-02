@@ -6,14 +6,14 @@ use App\Http\Controllers\Api\DashboardController;
 Route::get('/', function () {
     $path = public_path('app/index.html');
     abort_unless(file_exists($path), 404, 'Frontend build not found');
-    return file_get_contents($path);
+    return response()->file($path);
 });
 
 Route::get('/{any}', function () {
     $path = public_path('app/index.html');
     abort_unless(file_exists($path), 404, 'Frontend build not found');
-    return file_get_contents($path);
-})->where('any', '^(?!api).*$');
+    return response()->file($path);
+})->where('any', '^(?!api|assets).*$');
 
 Route::prefix('api')->group(function () {
     Route::get('/resumo', [DashboardController::class, 'resumo']);
